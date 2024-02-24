@@ -1,7 +1,7 @@
 import pytest
 import mock
 import builtins
-from DZ11.v0 import Fraction
+from v0 import Fraction
 
 
 @pytest.mark.parametrize(
