@@ -10,8 +10,6 @@ from v0 import Fraction
         (12, 12),
         (23, 121),
         (0, 1),
-        (12.323, 1241.2131),
-        (32.0, 12.0)
     ]
 )
 def test_init(num, den):
@@ -26,8 +24,6 @@ def test_init(num, den):
         (12, 12, '12/12'),
         (23, 121, '23/121'),
         (0, 1, '0/1'),
-        (12.323, 1241.2131, '12.323/1241.2131'),
-        (32.0, 12.0, '32.0/12.0')
     ]
 )
 def test_str(num, den, res):
@@ -38,14 +34,34 @@ def test_str(num, den, res):
 @pytest.mark.parametrize(
     ('values', 'ans'),
     [
-        ('12 21', '12.0/21.0'),
-        ('1141 2142', '1141.0/2142.0'),
-        ('21.123 12.12', '21.123/12.12')
+        ('12 21', '12/21'),
+        ('1141 2142', '1141/2142'),
+        ('0 1', '0/1')
     ]
 )
 def test_input_digits(values, ans):
     a = Fraction()
     with mock.patch.object(builtins, 'input', lambda _: values):
-        a.input_digits()
-
+        a.input_fraction()
     assert str(a) == ans
+
+
+@pytest.mark.parametrize(
+    ('num', 'den', 'res'),
+    [
+        ('12', '15', (12, 15)),
+        (1, 12, (1, 12)),
+        ('12232', '213', (12232, 213))
+    ]
+)
+def test_validity(num, den, res):
+    a = Fraction()
+    assert a.validate(num, den) == res
+
+
+def test_validity_exception():
+    a = Fraction()
+    with pytest.raises(ZeroDivisionError, match="Знаменатель не может быть равен нулю"):
+        a.validate(1, 0)
+    with pytest.raises(ValueError, match='Неверный формат данных'):
+        a.validate('ewfmlkwje', 'kl;afsnar')
